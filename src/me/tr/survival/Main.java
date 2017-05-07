@@ -13,7 +13,7 @@ public class Main extends JavaPlugin{
 	public void onDisable(){
 		
 		System.out.println("Plugin on nyt pois p‰‰lt‰!");
-		
+		// Test
 	}
 	
 }
