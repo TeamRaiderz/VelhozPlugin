@@ -13,7 +13,7 @@ public class CommandTop {
 	if (!p.hasPermission("minelogia.essentials.toptop")) {
 		p.sendMessage(ChatColor.RED + "Ei oikeutta.");
 	}
-	if (label.equalsIgnoreCase("top")) {
+
 		double xtop = p.getLocation().getX();
 		double ztop = p.getLocation().getZ();
 		double ytop = p.getWorld().getHighestBlockYAt(p.getLocation());
@@ -21,7 +21,7 @@ public class CommandTop {
 		p.teleport(new Location(w, xtop, ytop, ztop));
 		p.sendMessage(ChatColor.GREEN + "Sinut teleportattiin ylimmälle palikalle!");
 		
-	}
+	
 	return false;
 	}
 }

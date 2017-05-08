@@ -9,7 +9,7 @@ import net.md_5.bungee.api.ChatColor;
 
 public class FastKick {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (label.equalsIgnoreCase("fastkick")) {
+		
 			if (!sender.hasPermission("fastkick.use")) {
 				sender.sendMessage(ChatColor.RED + "Ei oikeutta.");
 				return true;
@@ -25,7 +25,7 @@ public class FastKick {
 			}
 			target.kickPlayer("Sinut on kickattu!");
 			sender.sendMessage(ChatColor.GREEN + target.getName() + " potkittu onnistuneesti!");
-		}
+		
 	return true;	
 	}
 
