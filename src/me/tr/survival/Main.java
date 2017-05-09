@@ -4,8 +4,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.tr.survival.commands.admin.PunishCommand;
+import me.tr.survival.commands.essentials.CommandSpawn;
 import me.tr.survival.util.SurvivalAPI;
+import me.tr.survival.util.punishments.BlacklistCommand;
 
 public class Main extends JavaPlugin{
 
@@ -15,7 +16,8 @@ public class Main extends JavaPlugin{
 		
 		instance = this;
 		
-		registerCommand("punish", new PunishCommand());
+		registerCommand("ban", new BlacklistCommand());
+		registerCommand("spawn", new CommandSpawn());
 		
 		System.out.println("Plugin on nyt p‰‰ll‰!");
 		

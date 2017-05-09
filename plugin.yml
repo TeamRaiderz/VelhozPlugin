@@ -2,3 +2,7 @@ main: me.tr.survival.Main
 version: 1.0
 authors: [TeamRaiders, play2002wh]
 name: SurvivalPlugin
+
+commands:
+  spawn:
+    description: tp to spawn

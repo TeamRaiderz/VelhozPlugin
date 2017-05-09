@@ -19,20 +19,26 @@ public class BlacklistCommand implements CommandExecutor{
 			return true;
 		}
 		
-		if(label.equalsIgnoreCase("blacklist")){
+		if(label.equalsIgnoreCase("ban")){
 			
 			if(args.length == 1){
 				
 				OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 				
+				StringBuilder sb = new StringBuilder();
+				for (int i =1; i<args.length; i++){
+					sb.append(args[i]).append(" ");
+				}
+				String allArgs = sb.toString().trim();
+				
 				if(target.isOnline()){
 					
-					target.getPlayer().kickPlayer("§cYou have been blacklisted from this server! \n §7You were blacklisted by: §c" + sender.getName() + "§7!");
-					Main.getAPI().getPunishmentManager().setBlacklisted(target.getName(), true, sender.getName());
+					target.getPlayer().kickPlayer("§cSinulla on porttikielto serverille! \n §7Porttikiellon antoi: §c" + sender.getName() + "§7! \n Syy: §c" + allArgs);
+					Main.getAPI().getPunishmentManager().setBlacklisted(target.getName(), true, sender.getName(), allArgs);
 					
 				}else{
 					
-					Main.getAPI().getPunishmentManager().setBlacklisted(target.getName(), true, sender.getName());
+					Main.getAPI().getPunishmentManager().setBlacklisted(target.getName(), true, sender.getName(), allArgs);
 					
 				}
 				
@@ -42,13 +48,19 @@ public class BlacklistCommand implements CommandExecutor{
 			}
 			
 		}
-		else if(label.equalsIgnoreCase("unblacklist")){
+		else if(label.equalsIgnoreCase("unban")){
 			
 			if(args.length == 1){
 				
 				OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 				
-				Main.getAPI().getPunishmentManager().setBlacklisted(target.getName(), false, sender.getName());
+				if(Main.getAPI().getPunishmentManager().isBlacklisted(target.getName())){
+					Main.getAPI().getPunishmentManager().setBlacklisted(target.getName(), false, sender.getName());
+				}
+				else if(Main.getAPI().getPunishmentManager().isBanned(target.getName())){
+					Main.getAPI().getPunishmentManager().unbanPlayer(target.getName());
+				}
+				
 			}
 			else{
 				return true;

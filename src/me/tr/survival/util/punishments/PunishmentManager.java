@@ -1,17 +1,9 @@
 package me.tr.survival.util.punishments;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.TimeZone;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -20,62 +12,62 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
-import org.bukkit.scheduler.BukkitRunnable;
+
+import me.tr.survival.Main;
+import me.tr.survival.util.files.FileManager;
+import me.tr.survival.util.files.PlayerData;
 
 public class PunishmentManager implements Listener{
 	
-	private HashMap<String, Integer> bans = new HashMap<String, Integer>();
-	private HashMap<String, Integer> warnings = new HashMap<String, Integer>();
-	private HashMap<String, Integer> kicks = new HashMap<String, Integer>();
-	
-	public void setBlacklisted(String target, boolean value, String punisher){
-		OfflinePlayer p = Bukkit.getOfflinePlayer(target);
-//		Main.getDataFile().set(p.getUniqueId().toString() + ".blacklist.blacklisted", value);
-//		Main.getDataFile().set(p.getUniqueId().toString() + ".blacklist.punisher", punisher);
-//		Main.saveDataFile();
+	public void setBlacklisted(String target, boolean value, String punisher, String reason){
+		FileManager dataFile = PlayerData.getPlayerFile(target);
+		dataFile.set("blacklist.blacklisted", value);
+		dataFile.set("blacklist.punisher", punisher);
+		dataFile.set("blacklist.reasom", reason);
+		PlayerData.savePlayerFile(target);
 	}
 	
 	public boolean isBlacklisted(String target){
-		OfflinePlayer p = Bukkit.getOfflinePlayer(target);
-		return false;
+		return PlayerData.getPlayerFile(target).getBoolean("blacklist.blacklisted");
 	}
 	
-	public void tempBanDays(String target, int time, String punisher, String reason, int multi){
+	public void tempBanDays(String target, int time, String punisher, String reason, int multi) {
 		OfflinePlayer p = Bukkit.getOfflinePlayer(target);
-		
-		if(isBanned(p.getName())){
+
+		if (isBanned(p.getName())) {
 			Bukkit.getPlayer(punisher).sendMessage("ß7That player is already banned!");
 			return;
 		}
-		
-		    long endOfBan = (System.currentTimeMillis()/1000) + (24 * 60 * 60) * time;
-		    
-//		Main.getDataFile().set(p.getUniqueId().toString() + ".ban.punished", true);
-//		Main.getDataFile().set(p.getUniqueId().toString() + ".ban.banTime", endOfBan);
-//		Main.getDataFile().set(p.getUniqueId().toString() + ".ban.punisher", punisher);
-//		Main.getDataFile().set(p.getUniqueId().toString() + ".ban.reason", reason);
-//		Main.saveDataFile();
-		
-		if(p.isOnline()){
-			p.getPlayer().kickPlayer("ßcYou have been banned from this server! \n ß7Reason: ßc" + reason + " \n ß7Banned by: ßc" + punisher +
-					"\n ß7You will be unbanned in: ßc" + getBanTimeLeft(target));
+
+		long endOfBan = (System.currentTimeMillis() / 1000) + (24 * 60 * 60) * time;
+
+		FileManager dataFile = PlayerData.getPlayerFile(target);
+
+		dataFile.set("ban.punished", true);
+		dataFile.set("ban.banTime", endOfBan);
+		dataFile.set("ban.punisher", punisher);
+		dataFile.set("ban.reason", reason);
+		PlayerData.savePlayerFile(target);
+
+		if (p.isOnline()) {
+			p.getPlayer().kickPlayer("ßcSinulla on v‰liaikainen porttikielto serverille! \n ß7Syy: ßc" + reason + " \n ß7Porttikiellon antoi: ßc" + punisher +
+					"\n ß7Porttikielto p‰‰ttyy: ßc" + getBanTimeLeft(p.getName().toString()));
 		}
-		
+
 	}
 	
 	public void unbanPlayer(String target){
-		OfflinePlayer p = Bukkit.getOfflinePlayer(target);
-//		Main.getDataFile().set(p.getUniqueId().toString() + ".ban.punished", false);
-//		Main.getDataFile().set(p.getUniqueId().toString() + ".ban.banTime", 0);
-//		Main.getDataFile().set(p.getUniqueId().toString() + ".ban.punisher", "");
-//		Main.getDataFile().set(p.getUniqueId().toString() + ".ban.reason", "");
-//		Main.saveDataFile();
+		FileManager dataFile = PlayerData.getPlayerFile(target);
+		dataFile.set("ban.punished", false);
+		dataFile.set("ban.banTime", 0);
+		dataFile.set("ban.punisher", "");
+		dataFile.set("ban.reason", "");
+		PlayerData.savePlayerFile(target);
 	}
 	
 	public boolean isBanned(String player){
 		OfflinePlayer p = Bukkit.getOfflinePlayer(player);
-		String uuid = p.getUniqueId().toString();
-		return false;
+		return PlayerData.getPlayerFile(player).getBoolean("ban.punished");
 	}
 	
 	
@@ -112,8 +104,7 @@ public class PunishmentManager implements Listener{
 	}
 	
 	public Long getEndOfBan(String player){
-		OfflinePlayer p = Bukkit.getOfflinePlayer(player);
-		return Long.valueOf(0);
+		return Long.valueOf(PlayerData.getPlayerFile(player).getString("ban.banTime")).longValue();
 	}
 
 	public String setReason(String[] args, int start) {
@@ -146,16 +137,17 @@ public class PunishmentManager implements Listener{
 		long end = getEndOfBan(p.getName()).longValue();
 		
 		if(isBlacklisted(p.getName())){
-			String punisher = "";
-			e.disallow(Result.KICK_BANNED, "ßcYou have been blacklisted from this server! \n ß7You were blacklisted by: ßc" + punisher + "ß7!");
+			String punisher = PlayerData.getPlayerFile(p.getName()).getString("blacklist.punisher");
+			String reason = PlayerData.getPlayerFile(p.getName()).getString("blacklist.reason");
+			e.disallow(Result.KICK_BANNED, "ßcSinulla on porttikielto serverille! \n ß7Porttikiellon antoi: ßc" + punisher + "ß7! \n Syy: ßc" + reason);
 		}
 		else if (isBanned(p.getName())){
-			String punisher = "";
-			String reason = "";
+			String punisher = PlayerData.getPlayerFile(p.getName()).getString("ban.punisher");
+			String reason = PlayerData.getPlayerFile(p.getName()).getString("ban.reason");
 			
 			if(current < end){
-				e.disallow(Result.KICK_BANNED, "ßcYou have been banned from this server! \n ß7Reason: ßc" + reason + " \n ß7Banned by: ßc" + punisher +
-						"\n ß7You will be unbanned in: ßc" + getBanTimeLeft(p.getName().toString()));
+				e.disallow(Result.KICK_BANNED, "ßcSinulla on v‰liaikainen porttikielto serverille! \n ß7Syy: ßc" + reason + " \n ß7Porttikiellon antoi: ßc" + punisher +
+						"\n ß7Porttikielto p‰‰ttyy: ßc" + getBanTimeLeft(p.getName().toString()));
 			}
 			else if (end < current){
 				unbanPlayer(p.getName());
