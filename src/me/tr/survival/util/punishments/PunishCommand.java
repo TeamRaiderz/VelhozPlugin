@@ -78,8 +78,8 @@ public class PunishCommand implements CommandExecutor, Listener {
 		
 		api.createItem(inv, 10, Material.SIGN, 1, "§c§lBAN", Arrays.asList("§7Below there are the", "§7ban time options."));
 		api.createWoolItem(inv, 19, DyeColor.GREEN, "§a§l1 Day", Arrays.asList("§7Click to ban §a" + target + " §7for §a1 Day§7 for the reason:", "§a" + reason));
-		api.createWoolItem(inv, 28, DyeColor.ORANGE, "§6§l30 Days", Arrays.asList("§7Click to ban §a" + target + " §7for §630 Days§7 for the reason:", "§a" + reason));
-		api.createWoolItem(inv, 37, DyeColor.RED, "§c§l3 Months", Arrays.asList("§7Click to ban §a" + target + " §7for §c3 Months§7 for the reason:", "§a" + reason));
+		api.createWoolItem(inv, 28, DyeColor.GREEN, "§a§l1 Week", Arrays.asList("§7Click to ban §a" + target + " §7for §a1 Week§7 for the reason:", "§a" + reason));
+		api.createWoolItem(inv, 37, DyeColor.ORANGE, "§6§l1 Month", Arrays.asList("§7Click to ban §a" + target + " §7for §61 Month§7 for the reason:", "§a" + reason));
 		
 		api.createItem(inv, 16, Material.SIGN, 1, "§c§lOTHER", Arrays.asList("§7Below there are the", "§7other punishments."));
 		api.createItem(inv, 25, Material.REDSTONE, 1, "§c§lKick", Arrays.asList("§7Click to kick the player", "§a" + target + " §7for the reason:", "§a" + reason));

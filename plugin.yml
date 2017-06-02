@@ -4,5 +4,5 @@ authors: [TeamRaiders, play2002wh]
 name: SurvivalPlugin
 
 commands:
-  spawn:
-    description: tp to spawn
+  punish:
+    description: Punish a player

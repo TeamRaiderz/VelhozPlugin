@@ -55,7 +55,7 @@ public class BlacklistCommand implements CommandExecutor{
 				OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 				
 				if(Main.getAPI().getPunishmentManager().isBlacklisted(target.getName())){
-					Main.getAPI().getPunishmentManager().setBlacklisted(target.getName(), false, sender.getName());
+					Main.getAPI().getPunishmentManager().setBlacklisted(target.getName(), false, sender.getName(), "");
 				}
 				else if(Main.getAPI().getPunishmentManager().isBanned(target.getName())){
 					Main.getAPI().getPunishmentManager().unbanPlayer(target.getName());
